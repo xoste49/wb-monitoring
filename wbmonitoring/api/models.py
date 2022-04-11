@@ -3,8 +3,26 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 
-class Products(models.Model):
-    vendor_code = models.IntegerField('Артикул', unique=True)
+class Articles(models.Model):
+    article = models.IntegerField('Артикул', unique=True)
+    #last_update = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Артикул'
+        verbose_name_plural = 'Артикулы'
+        ordering = ['article']
+
+    def __str__(self):
+        return str(self.article)
+
+
+class ProductHistory(models.Model):
+    article = models.ForeignKey(
+        Articles,
+        on_delete=models.CASCADE,
+        verbose_name="Артикул",
+        related_name="history",
+    )
     name = models.CharField('Наименование', max_length=500)
     price = models.DecimalField(
         'Цена без скидки',
@@ -20,9 +38,17 @@ class Products(models.Model):
     seller = models.CharField('Поставщик', max_length=100)
     add_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'Артикул'
+        verbose_name_plural = 'Артикулы'
+        ordering = ['-add_date']
+
+    def __str__(self):
+        return self.code
+
 
 class CustomUser(AbstractUser):
-    products = models.ManyToManyField(Products)
+    favorites = models.ManyToManyField(Articles)
 
     class Meta:
         verbose_name = 'Пользователь'
