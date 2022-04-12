@@ -1,3 +1,5 @@
 Django==4.0.4
 djangorestframework==3.13.1
 djoser==2.1.0
+celery==5.2.6
+redis==4.2.2
