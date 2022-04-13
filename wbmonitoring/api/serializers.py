@@ -6,20 +6,20 @@ from .models import ProductHistory, Articles
 User = get_user_model()
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'favorites']
 
 
-class ArticlesSerializer(serializers.HyperlinkedModelSerializer):
+class ArticlesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Articles
         fields = ['article', ]
 
 
-class ProductHistorySerializer(serializers.HyperlinkedModelSerializer):
+class ProductHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductHistory
-        fields = ['number', 'name', 'price', 'discount_price', 'brand',
+        fields = ['article', 'name', 'old_price', 'final_price', 'brand',
                   'seller', 'add_date']
