@@ -17,6 +17,8 @@ User = get_user_model()
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     """
+    Артикулы пользователей
+
     GET - Получаем список добавленных артикулов пользователя
     POST - Добавляем артикул в список пользователя
              если артикула нет в базе артикулов то добавляем и туда
@@ -72,6 +74,9 @@ class FavoritesViewSet(viewsets.ModelViewSet):
 
 
 class ProductHistoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    История карточек товаров с фильтрацией
+    """
     serializer_class = ProductHistorySerializer
     permission_classes = [IsAuthenticated]
 
@@ -101,7 +106,9 @@ class ProductHistoryViewSet(viewsets.ReadOnlyModelViewSet):
                 status.HTTP_400_BAD_REQUEST
             )
         from_date = datetime.datetime.strptime(from_date, '%Y-%m-%d').date()
+        from_date = datetime.datetime.combine(from_date, datetime.time.min)
         to_date = datetime.datetime.strptime(to_date, '%Y-%m-%d').date()
+        to_date = datetime.datetime.combine(to_date, datetime.time.max)
         interval = int(interval)
         if interval not in (1, 30, 60):
             raise ValidationError(
