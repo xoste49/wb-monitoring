@@ -18,5 +18,9 @@ class ArticlesAdmin(admin.ModelAdmin):
 
 @admin.register(ProductHistory)
 class ProductHistoryAdmin(admin.ModelAdmin):
-    list_display = '__all__'
+    list_display = (
+        'article', 'brand', 'name',
+        'final_price', 'old_price',
+        'seller', 'add_date'
+    )
     ordering = ['-add_date']
