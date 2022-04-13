@@ -1,0 +1,41 @@
+version: '3.7'
+#
+# python manage.py runserver
+services:
+  celery:
+    build: ./wbmonitoring
+    command: celery -A wbmonitoring worker -l info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - SQL_HOST=db
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - redis
+      - db
+  celery-beat:
+    build: ./wbmonitoring
+    command: celery -A wbmonitoring beat -l info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - SQL_HOST=db
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - redis
+      - db
+  db:
+    image: postgres:14.2-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
+
+volumes:
+  postgres_data_dev:
