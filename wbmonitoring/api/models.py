@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
 
 class Articles(models.Model):
     """
@@ -53,15 +55,29 @@ class ProductHistory(models.Model):
         return f'{str(self.article)} | {str(self.add_date)}'
 
 
-class CustomUser(AbstractUser):
+class Favorites(models.Model):
     """
-    Пользователь с добавленным полем избранных артикулов
+    Артикулы пользователей
     """
-    favorites = models.ManyToManyField(Articles)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="favorite",
+        verbose_name='Пользователь',
+    )
+    article = models.ForeignKey(
+        Articles,
+        on_delete=models.CASCADE,
+        related_name="favorite",
+        verbose_name='Артикул',
+    )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-
-
-User = get_user_model()
+        verbose_name = 'Избранный артикул'
+        verbose_name_plural = 'Избранные артикулы'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'article'],
+                name='unique_favorite_user_article'
+            )
+        ]

@@ -1,17 +1,14 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 
-from .models import Articles, ProductHistory
-
-User = get_user_model()
+from .models import Articles, ProductHistory, Favorites
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    fields = ['username', 'email', 'favorites']
-    # list_display = ('name', 'email')
-    ordering = ['username']
-    search_fields = ['username']
+@admin.register(Favorites)
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'article')
+    search_fields = ('user',)
+    list_filter = ('id', 'user', 'article')
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Articles)
