@@ -12,8 +12,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'add-every-hour2': {
+    'add-every-hour': {
         'task': 'api.tasks.parse_wb',
-        'schedule': crontab(),
+        'schedule': crontab(minute=0),
     },
 }
