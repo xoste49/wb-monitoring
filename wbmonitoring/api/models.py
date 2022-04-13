@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 
 
 class Articles(models.Model):
+    """
+    Хранит в себе все артикулы
+    """
     article = models.IntegerField('Артикул', unique=True)
     #last_update = models.DateTimeField(auto_now_add=True)
 
@@ -17,6 +20,9 @@ class Articles(models.Model):
 
 
 class ProductHistory(models.Model):
+    """
+    История карточек товаров
+    """
     article = models.ForeignKey(
         Articles,
         on_delete=models.CASCADE,
@@ -24,30 +30,33 @@ class ProductHistory(models.Model):
         related_name="history",
     )
     name = models.CharField('Наименование', max_length=500)
-    price = models.DecimalField(
+    old_price = models.DecimalField(
         'Цена без скидки',
         max_digits=10,
         decimal_places=2
     )
-    discount_price = models.DecimalField(
+    final_price = models.DecimalField(
         'Цена со скидкой',
         max_digits=10,
         decimal_places=2
     )
     brand = models.CharField('Бренд', max_length=100)
     seller = models.CharField('Поставщик', max_length=100)
-    add_date = models.DateTimeField(auto_now_add=True)
+    add_date = models.DateTimeField('Дата добавления', auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Артикул'
-        verbose_name_plural = 'Артикулы'
+        verbose_name = 'История Товара'
+        verbose_name_plural = 'Истории Товаров'
         ordering = ['-add_date']
 
     def __str__(self):
-        return self.code
+        return f'{str(self.article)} | {str(self.add_date)}'
 
 
 class CustomUser(AbstractUser):
+    """
+    Пользователь с добавленным полем избранных артикулов
+    """
     favorites = models.ManyToManyField(Articles)
 
     class Meta:
