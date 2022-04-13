@@ -25,8 +25,12 @@ def wb(article):
     if r_price.status_code != 200:
         return {'error': ''}
     response_price = json.loads(r_price.text)
-    final_price = int(response_price['data']['products'][0]['salePriceU'])/100
-    old_price = int(response_price['data']['products'][0]['priceU'])/100
+    products = response_price['data']['products']
+    if len(products) == 0:
+        return {'error': f'Товар с артикулом {article} отсутствует'}
+    product = products[0]
+    final_price = int(product['salePriceU'])/100
+    old_price = int(product['priceU'])/100
 
     r_seller = requests.get(
         f'https://wbx-content-v2.wbstatic.net/sellers/{article}.json'
