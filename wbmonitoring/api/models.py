@@ -1,6 +1,5 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 
 User = get_user_model()
 
@@ -10,7 +9,6 @@ class Articles(models.Model):
     Хранит в себе все артикулы
     """
     article = models.IntegerField('Артикул', unique=True)
-    #last_update = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Артикул'

@@ -2,15 +2,15 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Articles, Favorites
-from .serializers import ProductHistorySerializer, CreateFavoriteSerializer, \
-    GetFavoriteSerializer
+from .serializers import (CreateFavoriteSerializer, GetFavoriteSerializer,
+                          ProductHistorySerializer)
 
 User = get_user_model()
 
@@ -48,7 +48,11 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             )
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response({'message': 'Артикул добавлен'}, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            {'message': 'Артикул добавлен'},
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -125,3 +129,4 @@ class ProductHistoryViewSet(viewsets.ReadOnlyModelViewSet):
             return queryset.filter(add_date__hour__in=(0, 30))
         elif interval == 24:
             return queryset.filter(add_date__hour=0)
+        return None

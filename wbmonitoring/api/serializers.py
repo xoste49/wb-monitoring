@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import ProductHistory, Articles, Favorites
+from .models import Articles, Favorites, ProductHistory
 
 User = get_user_model()
 
@@ -22,8 +22,7 @@ class ProductHistorySerializer(serializers.ModelSerializer):
 
 class GetFavoriteSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        response = ArticlesSerializer(instance.article).data['article']
-        return response
+        return ArticlesSerializer(instance.article).data['article']
 
     class Meta:
         fields = ('article',)
@@ -46,10 +45,13 @@ class CreateFavoriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         article = validated_data.pop('article')
-        article_instance, created = Articles.objects.get_or_create(article=article)
-        favorites_instance = Favorites.objects.create(**validated_data,
-                                                  article=article_instance)
-        return favorites_instance
+        article_instance, created = Articles.objects.get_or_create(
+            article=article
+        )
+        return Favorites.objects.create(
+            **validated_data,
+            article=article_instance
+        )
 
     class Meta:
         fields = ('user', 'article')

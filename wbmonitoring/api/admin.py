@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Articles, ProductHistory, Favorites
+from .models import Articles, Favorites, ProductHistory
 
 
 @admin.register(Favorites)
@@ -18,5 +18,5 @@ class ArticlesAdmin(admin.ModelAdmin):
 
 @admin.register(ProductHistory)
 class ProductHistoryAdmin(admin.ModelAdmin):
-    list_display = ('article', 'brand', 'name', 'seller', 'final_price', 'old_price', 'add_date')
+    list_display = '__all__'
     ordering = ['-add_date']

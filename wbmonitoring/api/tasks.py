@@ -1,8 +1,9 @@
+import traceback
 from datetime import datetime
 
-from .models import Articles, ProductHistory
-
 from celery import shared_task
+
+from .models import Articles, ProductHistory
 from .parsers import wb as parser_wb
 
 
@@ -13,7 +14,7 @@ def parse_wb():
         for article in Articles.objects.all():
             product = parser_wb(article)
             if 'error' in product.keys():
-                print(product['error'])
+                print('error:', product['error'])
                 continue
             ProductHistory.objects.create(
                 article=article,
@@ -28,3 +29,4 @@ def parse_wb():
         print('Ошибка! Возможно не выполнены миграции '
               '(docker-compose exec web python manage.py migrate)')
         print(str(e))
+        print(traceback.format_exc())

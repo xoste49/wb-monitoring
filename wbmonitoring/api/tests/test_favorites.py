@@ -1,6 +1,6 @@
 import pytest
 
-from ..models import Favorites, Articles
+from ..models import Articles, Favorites
 
 
 class TestFavoritesAPI:
@@ -78,7 +78,8 @@ class TestFavoritesAPI:
         assert type(test_data) == dict, msg_error
         assert test_data.get('message') == 'Артикул добавлен', msg_error
 
-        assert favorites_count + 1 == Favorites.objects.filter(user=user).count(), (
+        assert favorites_count + 1 == Favorites.objects.filter(
+            user=user).count(), (
             'Проверьте, что при POST запросе на `/api/favorites/` '
             'в Favorites добавляются артикулы'
         )
