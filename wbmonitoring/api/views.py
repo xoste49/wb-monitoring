@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from .models import Articles, Favorites
 from .serializers import (CreateFavoriteSerializer, GetFavoriteSerializer,
                           ProductHistorySerializer)
+from .tasks import parse_wb_article
 
 User = get_user_model()
 
@@ -46,7 +47,14 @@ class FavoritesViewSet(viewsets.ModelViewSet):
                 {'error': 'Артикул уже в избранном'},
                 status.HTTP_400_BAD_REQUEST
             )
-        self.perform_create(serializer)
+        if not Articles.objects.filter(
+                article=request.data.get('article')).exists():
+            # Если артикула нет в базе, то сохраняем и ставим задачу спарсить
+            self.perform_create(serializer)
+            parse_wb_article.delay(request.data.get('article'))
+        else:
+            # Иначе только сохраняем в базе
+            self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
             {'message': 'Артикул добавлен'},
