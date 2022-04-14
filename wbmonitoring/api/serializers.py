@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from .models import Articles, Favorites, ProductHistory
+from .validators import article_isdigit_validator
 
 User = get_user_model()
 
@@ -39,8 +39,7 @@ class CreateFavoriteSerializer(serializers.ModelSerializer):
     article = serializers.CharField()
 
     def validate_article(self, article):
-        if not article.isdigit():
-            raise ValidationError('Артикул должен состоять только из цифр')
+        article_isdigit_validator(article)
         return article
 
     def create(self, validated_data):
